@@ -16,3 +16,6 @@
 # Ignore all local history of files
 .history
 .ionide
+
+# Fichier qui me sert de pense-bete
+.aide/*
