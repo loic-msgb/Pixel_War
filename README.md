@@ -1,4 +1,4 @@
-# PixelWar
+# Pixel_War
 
 Pixel War est un jeu multijoueur dans lequel les joueurs doivent "peindre" une matrice à deux dimensions en utilisant des couleurs différentes. Ce dépôt contient le code du serveur Pixel War écrit en C.
 
