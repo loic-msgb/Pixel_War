@@ -10,7 +10,7 @@ Le programme est écrit en langage C et doit être compilé à l'aide d'un compi
 
 1. Clonez le dépôt en exécutant la commande suivante dans votre terminal :
 ```bash
- git clone https://github.com/<username>/Pixel_War.git
+ git clone https://github.com/loic-msgb/Pixel_War.git
 ```
 2. Accédez au répertoire serveur :
 ```bash
