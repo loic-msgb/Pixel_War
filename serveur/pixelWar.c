@@ -16,9 +16,9 @@
 #define LG_MESSAGE   256
 #define MAX_CLIENTS 5
 
-// Valeurs matrice
-#define DEFAULT_L 80
-#define DEFAULT_H 60
+// Valeurs matrice Lignes Colonnes
+#define DEFAULT_L 60
+#define DEFAULT_C 40
 
 int main(int argc, char const *argv[])
 {
@@ -32,12 +32,15 @@ int main(int argc, char const *argv[])
 
     Client* liste = NULL;
 
-    int L, H; // dimensions matrice
+    int L, C; // dimensions matrice Ligne, Colonne
     L = DEFAULT_L;
-    H = DEFAULT_H;
+    C = DEFAULT_C;
     
-    Pixel matrice = init_matrice(L,H);
-
+    
+    Pixel** matrice = init_matrice(L,C);
+    
+    char* matrice_string = matrice_to_string(matrice, L, C);
+    
 
     // Récupère le nombre passé en parmètre
     int c;
@@ -98,86 +101,100 @@ int main(int argc, char const *argv[])
     }
     printf("Socket placée en écoute passive ...\n");
 
-while (1)
-{
-    // initialiser les set de file descriptor
-    FD_ZERO(&readfds);
-    FD_SET(socket_ecoute, &readfds);
-    max_fd = socket_ecoute; // on commence avec le socket d'écoute
-    // Ajouter les sockets des clients existants au readfds
-    Client* courant = liste;
-    while (courant != NULL)
+    while (1)
     {
-        FD_SET(courant->socket, &readfds);
-        if (courant->socket > max_fd) {
-            max_fd = courant->socket; // mise à jour du maximum de file descriptor
-        }
-        courant = courant->suivant;
-    }
-
-    // Wait for an activity on any of the sockets
-    if (select(max_fd + 1, &readfds, NULL, NULL, NULL) < 0) {
-        perror("select");
-        exit(EXIT_FAILURE);
-    }
-
-    // Check if there is a new incoming connection
-    if (FD_ISSET(socket_ecoute, &readfds))
-    {
-        // Accepter la connexion entrante
-        int client_len = sizeof(adresse_client);
-        int client_socket = accept(socket_ecoute, (struct sockaddr *)&adresse_client, &client_len);
-        if (client_socket < 0) {
-            perror("accept");
-            continue;
-        }
-        // Ajouter le nouveau client à la liste
-        Client* nouveau_client = (Client*)malloc(sizeof(Client));
-        nouveau_client->socket = client_socket;
-        nouveau_client->suivant = liste;
-        liste = nouveau_client;
-        printf("Nouvelle connexion : %s:%d (socket %d)\n", inet_ntoa(adresse_client.sin_addr), ntohs(adresse_client.sin_port), client_socket);
-    }
-
-    // Vérifier si les sockets des clients ont reçu des données
-    courant = liste;
-    while (courant != NULL)
-    {
-        if (FD_ISSET(courant->socket, &readfds))
+        // initialiser les set de file descriptor
+        FD_ZERO(&readfds);
+        FD_SET(socket_ecoute, &readfds);
+        max_fd = socket_ecoute; // on commence avec le socket d'écoute
+        // Ajouter les sockets des clients existants au readfds
+        Client* courant = liste;
+        while (courant != NULL)
         {
-            // Lecture des données reçues
-            int lus = read(courant->socket, messageRecu, LG_MESSAGE*sizeof(char));
-            if (lus <= 0) {
-                // Erreur ou déconnexion du client
-                if (lus == 0) {
-                    printf("Déconnexion du client (socket %d)\n", courant->socket);
-                    supprimer_client(&liste, courant->socket);
+            FD_SET(courant->socket, &readfds);
+            if (courant->socket > max_fd) {
+                max_fd = courant->socket; // mise à jour du maximum de file descriptor
+            }
+            courant = courant->suivant;
+        }
+
+        // Wait for an activity on any of the sockets
+        if (select(max_fd + 1, &readfds, NULL, NULL, NULL) < 0) {
+            perror("select");
+            exit(EXIT_FAILURE);
+        }
+
+        // Check if there is a new incoming connection
+        if (FD_ISSET(socket_ecoute, &readfds))
+        {
+            // Accepter la connexion entrante
+            int client_len = sizeof(adresse_client);
+            int client_socket = accept(socket_ecoute, (struct sockaddr *)&adresse_client, &client_len);
+            if (client_socket < 0) {
+                perror("accept");
+                continue;
+            }
+            // Ajouter le nouveau client à la liste
+            Client* nouveau_client = (Client*)malloc(sizeof(Client));
+            nouveau_client->socket = client_socket;
+            nouveau_client->suivant = liste;
+            liste = nouveau_client;
+            printf("Nouvelle connexion : %s:%d (socket %d)\n", inet_ntoa(adresse_client.sin_addr), ntohs(adresse_client.sin_port), client_socket);
+
+            // Envoyer la matric_string au nouveau client
+            send(nouveau_client->socket, matrice_string,sizeof(struct Pixel)*L*C, 0);
+
+        }
+
+        // Vérifier si les sockets des clients ont reçu des données
+        courant = liste;
+        while (courant != NULL)
+        {
+            if (FD_ISSET(courant->socket, &readfds))
+            {
+                // Lecture des données reçues
+                int lus = read(courant->socket, messageRecu, LG_MESSAGE*sizeof(char));
+                if (lus <= 0) {
+                    // Erreur ou déconnexion du client
+                    if (lus == 0) {
+                        printf("Déconnexion du client (socket %d)\n", courant->socket);
+                        supprimer_client(&liste, courant->socket);
+                    } 
+                    else {
+                        perror("read");
+                        exit(-4);
+                    }
                 } 
                 else {
-                    perror("read");
-                    exit(-4);
+                    // Affichage du message reçu
+                    messageRecu[lus] = '\0'; // ajout du caractère de fin de chaîne
+                    printf("Message reçu (socket %d) : %s", courant->socket, messageRecu);
                 }
-            } 
-            else {
-                // Affichage du message reçu
-                messageRecu[lus] = '\0'; // ajout du caractère de fin de chaîne
-                printf("Message reçu (socket %d) : %s", courant->socket, messageRecu);
             }
+            memset(&messageRecu, 0x00, LG_MESSAGE);
+            courant = courant->suivant;
+            
         }
-        memset(&messageRecu, 0x00, LG_MESSAGE);
+    }
+    
+    // Fermer les sockets des clients restants
+    Client* courant = liste;
+    while (courant != NULL) {
+        close(courant->socket);
         courant = courant->suivant;
     }
-}
+    
+    // On ferme la ressource avant de quitter   
+    close(socket_ecoute);
 
-// Fermer les sockets des clients restants
-Client* courant = liste;
-while (courant != NULL) {
-    close(courant->socket);
-    courant = courant->suivant;
-}
-    
-// On ferme la ressource avant de quitter   
-close(socket_ecoute);
-    
+    // Libérer la mémoire allouée pour les éléments
+    free(matrice_string);
+
+    // Libérer chaque ligne de la matrice
+    for (int i = 0; i < L; i++) {
+        free(matrice[i]);
+    }
+    free(matrice);
+
     return 0;
 }
