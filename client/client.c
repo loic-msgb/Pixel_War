@@ -8,7 +8,7 @@
 
 #include"/home/loic/réseaux/PixelWar/src/matrice.c"
 
-#define TAILLE_MESSAGE 256
+#define TAILLE_MESSAGE 7200
 // Valeurs matrice
 #define DEFAULT_L 60
 #define DEFAULT_C 40
@@ -57,7 +57,7 @@ int main(int argc, char const *argv[])
         perror("recv");
         exit(1);
     }
-    buffer[nb_octets] = '\0'; // Ajouter le caractère de fin de chaîne
+    //buffer[nb_octets] = '\0'; // Ajouter le caractère de fin de chaîne
     
     // Convertir la chaîne de caractères en une matrice de pixels
     matrice = string_to_matrice(buffer, L, C);

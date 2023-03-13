@@ -36,10 +36,11 @@ int main(int argc, char const *argv[])
     L = DEFAULT_L;
     C = DEFAULT_C;
     
+    
     Pixel** matrice = init_matrice(L,C);
     
     char* matrice_string = matrice_to_string(matrice, L, C);
-
+    
 
     // Récupère le nombre passé en parmètre
     int c;
