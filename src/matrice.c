@@ -1,5 +1,16 @@
-#include"matrice.h"
+#include "matrice.h"
+#include <sys/ioctl.h> // pour get_terminal_size
+#include <unistd.h>
 
+
+// Fonction pour obtenir la taille du terminal
+void get_terminal_size(int* L, int* C)
+{
+    struct winsize w;
+    ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+    *L = w.ws_row;
+    *C = w.ws_col;
+}
 // Initialiser une matrice de dimension LxC
 Pixel** init_matrice(int L, int C)
 {
@@ -21,16 +32,29 @@ Pixel** init_matrice(int L, int C)
     return matrice;
 };
 
-// Afficher la matrice 
+
+// Afficher la matrice centrée dans le terminal
 void afficher_matrice(Pixel** matrice, int L, int C)
 {
+    int term_L, term_C;
+    get_terminal_size(&term_L, &term_C);
+
+    int start_x = (term_L - L) / 2;
+    int start_y = (term_C - C) / 2;
+
+    for (int x = 0; x < start_x; x++) {
+        printf("\n");
+    }
     for (int x = 0; x < L; x++) {
+        for (int y = 0; y < start_y; y++) {
+            printf(" ");
+        }
         for (int y = 0; y < C; y++) {
             printf("\x1B[38;2;%d;%d;%dm█\x1B[0m", matrice[x][y].r, matrice[x][y].g, matrice[x][y].b);
         }
         printf("\n");
     }
-};
+}
 
 
 // Convertir la matrice de pixel en chaîne de caractère

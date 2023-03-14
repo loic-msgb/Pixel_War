@@ -1,4 +1,5 @@
-#include"/home/loic/réseaux/PixelWar/serveur/Client.h"
+#include "Client.h"
+#include "../src/matrice.h"
 
 // Fonction pour supprimer le client de la liste chaînée
 void supprimer_client(Client** liste, int socket_client);

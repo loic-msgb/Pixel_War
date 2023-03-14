@@ -1,3 +1,6 @@
+#ifndef _PIXEL_H
+#define _PIXEL_H
+
 #include <stdio.h>
 
 // Structure pixel
@@ -7,3 +10,5 @@ struct Pixel
 {
     unsigned char r, g, b;
 };
+
+#endif

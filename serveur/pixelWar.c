@@ -9,8 +9,8 @@
 #include <errno.h>
 #include<sys/select.h>
 
-#include "/home/loic/réseaux/PixelWar/serveur/serveur.c"
-#include"/home/loic/réseaux/PixelWar/src/matrice.c"
+#include "serveur.c"
+#include "/home/loic/réseaux/PixelWar/src/matrice.c"
 
 #define DEFAULT_PORT 5000
 #define LG_MESSAGE   256
@@ -38,7 +38,6 @@ int main(int argc, char const *argv[])
     
     
     Pixel** matrice = init_matrice(L,C);
-    
     char* matrice_string = matrice_to_string(matrice, L, C);
     
 

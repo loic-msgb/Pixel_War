@@ -1,4 +1,6 @@
 #include "Pixel.h"
+// Fonction pour obtenir la taille du terminal
+void get_terminal_size(int* L, int* C);
 // Initialiser une matrice
 Pixel** init_matrice(int L, int C);
 
