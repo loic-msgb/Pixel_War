@@ -6,7 +6,8 @@
 #include <netdb.h>
 #include <arpa/inet.h>
 
-#include"/home/loic/réseaux/PixelWar/src/matrice.c"
+#include "/home/loic/réseaux/PixelWar/src/menu.c"
+#include "/home/loic/réseaux/PixelWar/src/matrice.c"
 
 #define TAILLE_MESSAGE 7200
 // Valeurs matrice
@@ -31,11 +32,11 @@ int main(int argc, char const *argv[])
     char* serveur_port = argv[2];
     
     // Utilisez getaddrinfo() pour résoudre l'adserveurse IP du serveur en une structure d'adserveurse utilisable par les fonctions de socket
-    struct addrinfo hints, *serveur;
-    memset(&hints, 0, sizeof(hints));
-    hints.ai_family = AF_INET;
-    hints.ai_socktype = SOCK_STREAM;
-    getaddrinfo(serveur_ip, serveur_port, &hints, &serveur);
+    struct addrinfo hintss, *serveur;
+    memset(&hintss, 0, sizeof(hintss));
+    hintss.ai_family = AF_INET;
+    hintss.ai_socktype = SOCK_STREAM;
+    getaddrinfo(serveur_ip, serveur_port, &hintss, &serveur);
 
     // Créer un socket TCP
     int socket_fd = socket(serveur->ai_family, serveur->ai_socktype, serveur->ai_protocol);
@@ -57,12 +58,11 @@ int main(int argc, char const *argv[])
         perror("recv");
         exit(1);
     }
-    //buffer[nb_octets] = '\0'; // Ajouter le caractère de fin de chaîne
     
     // Convertir la chaîne de caractères en une matrice de pixels
     matrice = string_to_matrice(buffer, L, C);
 
-    afficher_matrice(matrice, L,C);
+    menu(matrice,L,C);
 
     // Libérer la mémoire allouée dynamiquement pour la matrice
     for (int i = 0; i < L; i++) {

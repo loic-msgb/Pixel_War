@@ -1,6 +1,11 @@
 {
     "files.associations": {
         "string.h": "c",
-        "socket.h": "c"
+        "socket.h": "c",
+        "stdio.h": "c",
+        "client.h": "c",
+        "matrice.h": "c",
+        "menu.h": "c",
+        "ioctl.h": "c"
     }
 }
