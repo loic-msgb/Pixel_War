@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "/home/loic/réseaux/PixelWar/src/menu.h"
+#include "menu.h"
 
 void menu(Pixel** matrice, int L, int C)
 {

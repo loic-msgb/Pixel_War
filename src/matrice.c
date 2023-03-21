@@ -1,7 +1,9 @@
-#include "matrice.h"
 #include <sys/ioctl.h> // pour get_terminal_size
 #include <unistd.h>
+#include <string.h>
+#include <stdlib.h>
 
+#include "matrice.h"
 
 // Fonction pour obtenir la taille du terminal
 void get_terminal_size(int* L, int* C)

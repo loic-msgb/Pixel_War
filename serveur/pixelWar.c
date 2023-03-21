@@ -9,8 +9,8 @@
 #include <errno.h>
 #include<sys/select.h>
 
-#include "serveur.c"
-#include "/home/loic/réseaux/PixelWar/src/matrice.c"
+#include "serveur.h"
+#include "../src/matrice.h"
 
 #define DEFAULT_PORT 5000
 #define LG_MESSAGE   256

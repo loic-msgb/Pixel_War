@@ -1,3 +1,7 @@
-#include "/home/loic/réseaux/PixelWar/src/matrice.h"
+#ifndef MENU_H
+#define MENU_H
 
+#include "matrice.h"
 void menu(Pixel** matrice, int L, int C);
+
+#endif

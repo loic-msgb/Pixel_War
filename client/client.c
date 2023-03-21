@@ -6,8 +6,8 @@
 #include <netdb.h>
 #include <arpa/inet.h>
 
-#include "/home/loic/réseaux/PixelWar/src/menu.c"
-#include "/home/loic/réseaux/PixelWar/src/matrice.c"
+#include "src/menu.h"
+#include "src/matrice.h"
 
 #define TAILLE_MESSAGE 7200
 // Valeurs matrice

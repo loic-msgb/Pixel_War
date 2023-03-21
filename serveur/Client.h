@@ -1,3 +1,6 @@
+#ifndef CLIENT_H
+#define CLIENT_H
+
 struct Client
 {
     int socket;
@@ -5,3 +8,5 @@ struct Client
     struct Client *suivant;
 };
 typedef struct Client Client;
+
+#endif

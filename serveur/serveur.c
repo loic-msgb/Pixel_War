@@ -1,4 +1,6 @@
-#include"/home/loic/réseaux/PixelWar/serveur/serveur.h"
+#include <stdlib.h>
+#include <netinet/in.h>
+#include"serveur.h"
 
 // Fonction pour supprimer le client de la liste chaînée
 void supprimer_client(Client** liste, int socket_client) {

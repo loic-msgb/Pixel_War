@@ -1,3 +1,6 @@
+#ifndef MATRICE_H
+#define MATRICE_H
+
 #include "Pixel.h"
 // Fonction pour obtenir la taille du terminal
 void get_terminal_size(int* L, int* C);
@@ -12,3 +15,5 @@ char* matrice_to_string(struct Pixel** matrice, int nb_lignes, int nb_colonnes);
 
 // Convertir la chaîne de caractère en matrice
 struct Pixel** string_to_matrice(char* buffer, int nb_lignes, int nb_colonnes);
+
+#endif
