@@ -18,7 +18,7 @@ cd Pixel_War/serveur
 ```
 3. Compilez le serveur :
 ```bash
-gcc -Wall PixelWar.c -o serveur
+gcc pixelWar.c serveur.c ../src/matrice.c -o serveur
 ```
 
 ## Utilisation
