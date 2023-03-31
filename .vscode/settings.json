@@ -6,6 +6,8 @@
         "client.h": "c",
         "matrice.h": "c",
         "menu.h": "c",
-        "ioctl.h": "c"
+        "ioctl.h": "c",
+        "types.h": "c",
+        "errno.h": "c"
     }
 }

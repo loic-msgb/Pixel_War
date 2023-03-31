@@ -7,7 +7,7 @@
 #include <netinet/in.h> /* pour struct sockaddr_in */
 #include <arpa/inet.h> /* pour htons et inet_aton */
 #include <errno.h>
-#include<sys/select.h>
+#include <sys/select.h>
 
 #include "serveur.h"
 #include "../src/matrice.h"
@@ -19,7 +19,7 @@
 // Valeurs matrice Lignes Colonnes
 #define DEFAULT_L 60
 #define DEFAULT_C 40
-
+// ncurses librairie C
 int main(int argc, char const *argv[])
 {
     int port = DEFAULT_PORT; //port par défaut
@@ -152,7 +152,8 @@ int main(int argc, char const *argv[])
             if (FD_ISSET(courant->socket, &readfds))
             {
                 // Lecture des données reçues
-                int lus = read(courant->socket, messageRecu, LG_MESSAGE*sizeof(char));
+                int lus = recv(courant->socket, messageRecu, LG_MESSAGE, 0);
+                // tester la valeur renvoyée par recv()               
                 if (lus <= 0) {
                     // Erreur ou déconnexion du client
                     if (lus == 0) {
@@ -160,14 +161,46 @@ int main(int argc, char const *argv[])
                         supprimer_client(&liste, courant->socket);
                     } 
                     else {
-                        perror("read");
+                        perror("recv");
                         exit(-4);
                     }
                 } 
                 else {
                     // Affichage du message reçu
                     messageRecu[lus] = '\0'; // ajout du caractère de fin de chaîne
-                    printf("Message reçu (socket %d) : %s", courant->socket, messageRecu);
+                    printf("Message reçu (socket %d) : %s\n", courant->socket, messageRecu);
+                    
+                    // Conversion du message en int
+                    int choix = atoi(messageRecu);
+                    
+                    switch (choix)
+                    {
+                    case 1:
+                        printf("veux placer un pixel\n");
+                        set_pixel_serv(courant->socket, matrice, L, C);
+                        break;
+                    case 2:
+                        printf("veux avoir une info\n");
+                        // afficher L et C sur le client
+                        // char* message = (char*)malloc(sizeof(char)*LG_MESSAGE);
+                        // sprintf(message, "%d %d", L, C);
+                        // send(courant->socket, message, strlen(message), 0);
+                        // free(message);
+                        break;
+                    case 3:
+                        printf("veux avoir la matrice\n");
+                        // envoyer la matrice au client
+                        send(courant->socket, matrice_string, sizeof(struct Pixel)*L*C, 0);
+                        break;
+                    case 4:
+                        // veut se déconnecter
+                        // supprimer le client de la liste
+                        printf("Déconnexion du client (socket %d)\n", courant->socket);
+                        supprimer_client(&liste, courant->socket);
+                        break;
+                    default:
+                        break;
+                    }
                 }
             }
             memset(&messageRecu, 0x00, LG_MESSAGE);

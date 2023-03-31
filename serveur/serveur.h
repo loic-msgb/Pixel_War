@@ -10,4 +10,7 @@ void supprimer_client(Client** liste, int socket_client);
 // Fonction pour afficher la liste de clients connectés
 void afficher_clients_connectes(Client* liste);
 
+// Fonction pour modifier le pixel demandé par le client
+void set_pixel_serv(int socket_client, Pixel** matrice, int L, int C);
+
 #endif

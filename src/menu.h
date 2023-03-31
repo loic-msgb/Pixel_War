@@ -2,6 +2,6 @@
 #define MENU_H
 
 #include "matrice.h"
-void menu(Pixel** matrice, int L, int C);
+void menu(void);
 
 #endif
