@@ -87,3 +87,11 @@ struct Pixel** string_to_matrice(char* buffer, int nb_lignes, int nb_colonnes) {
     
     return matrice;
 };
+
+// Initialiser une structure de pixel
+void init_pixel(Pixel* pixel,unsigned char r, unsigned char g, unsigned char b)
+{
+    pixel->r = r;
+    pixel->g = g;
+    pixel->r = b;
+};

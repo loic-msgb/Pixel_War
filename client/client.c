@@ -5,19 +5,27 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #include <arpa/inet.h>
+#include <unistd.h>
+#include <time.h>
 
-#include "src/menu.h"
-#include "src/matrice.h"
+#include "../src/menu.h"
+#include "../src/matrice.h"
+#include "fonctions.h"
 
 #define TAILLE_MESSAGE 7200
 // Valeurs matrice
 #define DEFAULT_L 60
 #define DEFAULT_C 40
+// chaine de caractère reçu du serveur
+char messageRecu[100];
+// chaines de caractères pour les choix de l'utilisateur
+char messageEnvoi[100];
 
 int main(int argc, char const *argv[])
 {
     int L = DEFAULT_L;
     int C = DEFAULT_C;
+    char choix[256];
 
     Pixel** matrice = init_matrice(L,C);
 
@@ -61,8 +69,32 @@ int main(int argc, char const *argv[])
     
     // Convertir la chaîne de caractères en une matrice de pixels
     matrice = string_to_matrice(buffer, L, C);
+    
+    while (atoi(choix) != 4)
+    {   
+        menu();
 
-    menu(matrice,L,C);
+        //choix de l'utilisateur
+        scanf("%s", choix);
+        printf("Vous avez choisi %s", choix);
+        switch (atoi(choix))
+        {
+        case 1:
+            //envoyer le choix de l'utilisateur
+            send(socket_fd, &choix, sizeof(choix), 0);
+            printf("Vous avez choisi de placer un pixel\n");
+            set_pixel_cli(socket_fd);
+            break;
+        case 2:
+            //envoyer le choix de l'utilisateur
+            send(socket_fd, &choix, sizeof(choix), 0);
+            printf("Vous avez choisi de voir les infos de la matrice\n");
+            break;
+        default:
+            break;
+        }
+        //sleep(8);
+    }
 
     // Libérer la mémoire allouée dynamiquement pour la matrice
     for (int i = 0; i < L; i++) {

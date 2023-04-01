@@ -1,6 +1,17 @@
 #include <stdlib.h>
 #include <netinet/in.h>
-#include"serveur.h"
+#include <string.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <sys/types.h>
+#include <sys/select.h>
+#include <errno.h>
+
+#include "serveur.h"
+
+#define LG_MESSAGE 256
 
 // Fonction pour supprimer le client de la liste chaînée
 void supprimer_client(Client** liste, int socket_client) {
@@ -39,4 +50,37 @@ void afficher_clients_connectes(Client* liste)
         printf("Client %s:%d (socket %d) connecté.\n", inet_ntoa(adresse_client.sin_addr), ntohs(adresse_client.sin_port), courant->socket);
         courant = courant->suivant;
     }
+}
+
+// Fonction pour modifier le pixel demandé par le client
+void set_pixel_serv(int socket_client, Pixel** matrice, int L, int C)
+{
+    // Recevoir le message du client
+    char* message = (char*)malloc(sizeof(char)*LG_MESSAGE);
+    memset(message, 0x00, LG_MESSAGE);
+    recv(socket_client, message, LG_MESSAGE, 0);
+    // gestion d'erreur
+    if (message == NULL) {
+        perror("Erreur lors de la réception du message");
+        exit(1);
+    }
+
+    // Declarer les variables
+    unsigned char x, y;
+    Pixel pixel;
+
+    // Recuperer les valeurs de x, y, r, g, b du message
+    sscanf(message, "%hhu %hhu %hhu %hhu %hhu", &x, &y, &pixel.r, &pixel.g, &pixel.b);
+    printf("x = %hhu, y = %hhu, r = %hhu, g = %hhu, b = %hhu\n", x, y, pixel.r, pixel.g, pixel.b);
+    
+    // Modifier la matrice
+    matrice[x][y] = pixel;
+    // envoyer un message de confirmation au client
+    char* message2 = (char*)malloc(sizeof(char)*LG_MESSAGE);
+    sprintf(message2, "Pixel (%hhu, %hhu) modifié avec succès", x, y);
+    send(socket_client, message2, strlen(message2), 0);
+    
+    // Libérer la mémoire allouée
+    free(message);
+    free(message2);
 }
