@@ -33,7 +33,7 @@ gcc client.c fonctions.c ../src/menu.c ../src/matrice.c -o client
 ## Utilisation
 1. Lancer le serveur et spécifier le port :
 ```bash
-./serveur -p {PORT} # port par défaut : 5000
+./serveur -p {PORT} -s {LxC} # port par défaut : 5000
 ```
 2. Lancer le client dans un autre terminal :
 ```bash
