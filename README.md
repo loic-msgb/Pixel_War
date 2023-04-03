@@ -31,7 +31,7 @@ gcc client.c fonctions.c ../src/menu.c ../src/matrice.c -o client
 ```
 
 ## Utilisation
-1. Lancer le serveur avec les paramètres suivants {port} {nombre de lignes}x{nombre de colonnes} :
+1. Lancer le serveur avec les paramètres suivants {port} {nombre de lignes}x{nombre de colonnes} et nombre de pixels/min :
 ```bash
 ./serveur -p {PORT} -s {LxC} -l {RATE_LIMIT} # port par défaut : 5000
 ```
