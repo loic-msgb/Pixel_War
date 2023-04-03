@@ -126,6 +126,7 @@ int main(int argc, char const *argv[])
     }
     printf("Socket placée en écoute passive ...\n");
 
+    //afficher_matrice(matrice, L, C);
     while (1)
     {
         // initialiser les set de file descriptor
@@ -203,16 +204,16 @@ int main(int argc, char const *argv[])
                         printf("veux placer un pixel\n");
                         // envoyer les dimensions de la matrice au client
                         send_size(courant->socket, L, C);
-                        printf("envoyé les dimensions\n");
                         set_pixel_serv(courant, matrice, L, C, rate_limit);
                         break;
                     case 2:
                         printf("veux avoir les dimensions de la matrice\n");
                         // afficher L et C sur le terminal client
                         send_size(courant->socket, L, C);
+                       // afficher_matrice(matrice, L, C);
                         break;
                     case 3:
-                        matrice_string = matrice_to_string(matrice, L, C);
+                        //matrice_string = matrice_to_string(matrice, L, C);
                         printf("veux avoir la matrice\n");
                         // envoyer les dimensions de la matrice au client
                         send_size(courant->socket, L, C);

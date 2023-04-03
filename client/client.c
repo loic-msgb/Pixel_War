@@ -85,7 +85,7 @@ int main(int argc, char const *argv[])
             // Recevoir les dimensions de la matrice
             get_size(socket_fd, &L, &C);
             // Afficher les dimensions de la matrice
-            printf("La matrice fait %d lignes et %d colonnes", L, C);
+            printf("La matrice fait %d lignes et %d colonnes\n", L, C);
             break;
         case 3:
             // Afficher la matrice

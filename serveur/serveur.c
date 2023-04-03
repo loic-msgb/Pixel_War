@@ -57,12 +57,10 @@ void afficher_clients_connectes(Client* liste)
 // Fonction pour modifier le pixel demandé par le client
 void set_pixel_serv(Client* courant, Pixel** matrice, int L, int C, int rate_limit)
 {
-    printf("1");
     // Recevoir le message du client
     char* message = (char*)malloc(sizeof(char)*LG_MESSAGE);
     memset(message, 0x00, LG_MESSAGE);
     recv(courant->socket, message, LG_MESSAGE, 0);
-    printf("1");
     // gestion d'erreur
     if (message == NULL) {
         perror("Erreur lors de la réception du message");
@@ -76,29 +74,30 @@ void set_pixel_serv(Client* courant, Pixel** matrice, int L, int C, int rate_lim
     // Recuperer les valeurs de x, y, r, g, b du message
     sscanf(message, "%hhu %hhu %hhu %hhu %hhu", &x, &y, &pixel.r, &pixel.g, &pixel.b);
     printf("x = %hhu, y = %hhu, r = %hhu, g = %hhu, b = %hhu\n", x, y, pixel.r, pixel.g, pixel.b);
-    printf("2");
+
     char* message2 = (char*)malloc(sizeof(char)*LG_MESSAGE);
     memset(message2, 0x00, LG_MESSAGE);
-    printf("3");
+
     // Vérifier si le client a dépassé le rate limit
     if(check_rate_limit(rate_limit, courant) == 0)
     {
         sprintf(message2, "Vous avez dépassé le rate limit, pixel (%hhu, %hhu) non modifié", x, y);
         send(courant->socket, message2, strlen(message2), 0);
-        // free(message);
-        // free(message2);
         return;
     }
     else
     { 
         // Modifier la matrice
-        matrice[x][y] = pixel;
+        matrice[x][y].r = pixel.r;
+        matrice[x][y].g = pixel.g;
+        matrice[x][y].b = pixel.b;
+        
         // envoyer un message de confirmation au client  
         sprintf(message2, "Pixel (%hhu, %hhu) modifié avec succès", x, y);
         send(courant->socket, message2, strlen(message2), 0);
         return;
     }
-    printf("4");
+
     // Libérer la mémoire allouée
     free(message);
     free(message2);
