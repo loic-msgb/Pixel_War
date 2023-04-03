@@ -148,7 +148,7 @@ int main(int argc, char const *argv[])
             printf("Nouvelle connexion : %s : %d (socket %d)\n", inet_ntoa(adresse_client.sin_addr), ntohs(adresse_client.sin_port), client_socket);
 
             // afficher L et C sur le terminal client
-            send_size(courant->socket, L, C);
+            //send_size(courant->socket, L, C);
 
         }
 

@@ -60,13 +60,6 @@ int main(int argc, char const *argv[])
         exit(1);
     }
 
-    // Recevoir les dimensions de la matrice du serveur
-    ssize_t nb_octets = get_size(socket_fd, &L, &C);
-    if (nb_octets == -1) {
-        perror("recv");
-        exit(1);
-    }
-
     Pixel** matrice = init_matrice(L,C);
     
     while (atoi(choix) != 4)
@@ -75,7 +68,7 @@ int main(int argc, char const *argv[])
 
         //choix de l'utilisateur
         scanf("%s", choix);
-        printf("Vous avez choisi %s", choix);
+        printf("Vous avez choisi %s\n", choix);
         switch (atoi(choix))
         {
         case 1:
