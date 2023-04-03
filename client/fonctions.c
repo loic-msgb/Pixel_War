@@ -12,6 +12,8 @@
 #include "../src/matrice.h"
 #include "fonctions.h"
 
+#define LG_MESSAGE   256
+
 // Récupérer, valider et envoyer les infos pour placer un pixel
 void set_pixel_cli(int sockfd)
 {   
@@ -41,4 +43,16 @@ void set_pixel_cli(int sockfd)
     sprintf(buffer, "%hhu %hhu %hhu %hhu %hhu", x, y, r, g, b);
     send(sockfd, buffer, strlen(buffer), 0);
     
+}
+
+// Recevoir les dimensions de la matrice
+ssize_t get_size(int sockfd, int *L, int *C)
+{
+    char buffer[LG_MESSAGE];
+    unsigned char x, y;
+    ssize_t lus = recv(sockfd, buffer, LG_MESSAGE, 0);
+    sscanf(buffer, "%hhu %hhu", x, y);
+    *L = atoi(x);
+    *C = atoi(y);
+    return lus;
 }

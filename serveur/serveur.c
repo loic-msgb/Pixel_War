@@ -84,3 +84,16 @@ void set_pixel_serv(int socket_client, Pixel** matrice, int L, int C)
     free(message);
     free(message2);
 }
+
+// Envoyer les dimensions de la matrice au client
+void send_size(int socket_client, int L, int C)
+{   
+    unsigned char x, y;
+    x = (unsigned char)L;
+    y = (unsigned char) C;
+    // envoyer la taille de la matrice au client
+    char* message = (char*)malloc(sizeof(char)*LG_MESSAGE);
+    sprintf(message, "%hhu %hhu", x, y);
+    send(socket_client, message, strlen(message), 0);
+    free(message);
+}

@@ -13,4 +13,7 @@ void afficher_clients_connectes(Client* liste);
 // Fonction pour modifier le pixel demandé par le client
 void set_pixel_serv(int socket_client, Pixel** matrice, int L, int C);
 
+// Envoyer les dimensions de la matrice au client
+void send_size(int socket_client, int L, int C);
+
 #endif
