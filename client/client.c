@@ -13,6 +13,8 @@
 #include "fonctions.h"
 
 #define TAILLE_MESSAGE 7200
+#define LG_MESSAGE 256
+
 // Valeurs matrice
 #define DEFAULT_L 60
 #define DEFAULT_C 40
@@ -27,7 +29,6 @@ int main(int argc, char const *argv[])
     int C = DEFAULT_C;
     char choix[256];
 
-    Pixel** matrice = init_matrice(L,C);
 
     // Vérifiez que l'utilisateur a fourni l'adserveurse IP et le numéro de port du serveur
     if (argc != 3) {
@@ -59,16 +60,14 @@ int main(int argc, char const *argv[])
         exit(1);
     }
 
-    // Recevoir le message du serveur
-    char buffer[TAILLE_MESSAGE];
-    ssize_t nb_octets = recv(socket_fd, buffer, TAILLE_MESSAGE, 0);
+    // Recevoir les dimensions de la matrice du serveur
+    ssize_t nb_octets = get_size(socket_fd, &L, &C);
     if (nb_octets == -1) {
         perror("recv");
         exit(1);
     }
-    
-    // Convertir la chaîne de caractères en une matrice de pixels
-    matrice = string_to_matrice(buffer, L, C);
+
+    Pixel** matrice = init_matrice(L,C);
     
     while (atoi(choix) != 4)
     {   
@@ -86,14 +85,13 @@ int main(int argc, char const *argv[])
             set_pixel_cli(socket_fd);
             break;
         case 2:
-            //envoyer le choix de l'utilisateur
-            send(socket_fd, &choix, sizeof(choix), 0);
-            printf("Vous avez choisi de voir les infos de la matrice\n");
+            // Afficher les dimensions de la matrice
+            printf("La matrice fait %d lignes et %d colonnes", L, C);
             break;
         default:
             break;
         }
-        //sleep(8);
+        
     }
 
     // Libérer la mémoire allouée dynamiquement pour la matrice
@@ -104,6 +102,9 @@ int main(int argc, char const *argv[])
 
     // Fermer la socket
     close(socket_fd);
+
+    // libérer les ressources de l'adresse
+    freeaddrinfo(serveur);
 
     return 0;
 }

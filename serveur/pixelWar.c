@@ -19,7 +19,7 @@
 // Valeurs matrice Lignes Colonnes
 #define DEFAULT_L 60
 #define DEFAULT_C 40
-// ncurses librairie C
+
 int main(int argc, char const *argv[])
 {
     int port = DEFAULT_PORT; //port par défaut
@@ -36,30 +36,37 @@ int main(int argc, char const *argv[])
     L = DEFAULT_L;
     C = DEFAULT_C;
     
-    
-    Pixel** matrice = init_matrice(L,C);
-    char* matrice_string = matrice_to_string(matrice, L, C);
-    
-
     // Récupère le nombre passé en parmètre
-    int c;
-    while ((c = getopt(argc, argv, "p:")) != -1) {
-        switch (c) {
+    int option;
+    while ((option = getopt(argc, argv, "p:s:")) != -1) {
+        switch (option) {
             case 'p':
                 errno = 0; // =! 0 si il y a une erreur de conversion à la ligne suivante
                 port = strtol(optarg, NULL, 10); // converti en int le nombre passé en paramètre
                 if (errno != 0 || port <= 0) {
                     printf("Paramètre invalide, port par défaut utilisé : %d\n", port);
-                    port = 5000;
+                    port = DEFAULT_PORT;
+                }
+                break;
+            case 's':
+                if (sscanf(optarg, "%dx%d", &L, &C) != 2) {
+                    printf("Paramètre invalide, dimensions par défaut utilisées : %dx%d\n", DEFAULT_L, DEFAULT_C);
+                    L = DEFAULT_L;
+                    C = DEFAULT_C;
                 }
                 break;
             default:
-                printf("format: %s [-p port]\n", argv[0]);
+                printf("format: %s [-p port] [-s LxC]\n", argv[0]);
                 exit(1);
         }
     }
-    // afficher le port utilisé
+    // afficher le port et les dimensions de la matrice utilisés
     printf("Connecté sur le port %d\n", port);
+    printf("Dimensions de la matrice : %dx%d\n", L, C);
+
+    // Création de la matrice
+    Pixel** matrice = init_matrice(L,C);
+    char* matrice_string = matrice_to_string(matrice, L, C);
 
     // créer un socket de communication
     socket_ecoute = socket(PF_INET, SOCK_STREAM, 0);     /* 0 indique que l'on utilisera le protocole par défaut associé à SOCK_STREAM soit TCP */
@@ -138,10 +145,10 @@ int main(int argc, char const *argv[])
             nouveau_client->socket = client_socket;
             nouveau_client->suivant = liste;
             liste = nouveau_client;
-            printf("Nouvelle connexion : %s:%d (socket %d)\n", inet_ntoa(adresse_client.sin_addr), ntohs(adresse_client.sin_port), client_socket);
+            printf("Nouvelle connexion : %s : %d (socket %d)\n", inet_ntoa(adresse_client.sin_addr), ntohs(adresse_client.sin_port), client_socket);
 
-            // Envoyer la matric_string au nouveau client
-            send(nouveau_client->socket, matrice_string,sizeof(struct Pixel)*L*C, 0);
+            // afficher L et C sur le terminal client
+            send_size(courant->socket, L, C);
 
         }
 
@@ -180,12 +187,9 @@ int main(int argc, char const *argv[])
                         set_pixel_serv(courant->socket, matrice, L, C);
                         break;
                     case 2:
-                        printf("veux avoir une info\n");
-                        // afficher L et C sur le client
-                        // char* message = (char*)malloc(sizeof(char)*LG_MESSAGE);
-                        // sprintf(message, "%d %d", L, C);
-                        // send(courant->socket, message, strlen(message), 0);
-                        // free(message);
+                        printf("veux avoir les dimensions de la matrice\n");
+                        // afficher L et C sur le terminal client
+                        send_size(courant->socket, L, C);
                         break;
                     case 3:
                         printf("veux avoir la matrice\n");
