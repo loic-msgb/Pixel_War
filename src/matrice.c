@@ -58,7 +58,6 @@ void afficher_matrice(Pixel** matrice, int L, int C)
     }
 }
 
-
 // Convertir la matrice de pixel en chaîne de caractère
 char* matrice_to_string(struct Pixel** matrice, int nb_lignes, int nb_colonnes) {
     // Allouer de la mémoire pour la chaîne de caractères
