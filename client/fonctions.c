@@ -35,10 +35,6 @@ void set_pixel_cli(int sockfd)
     printf("Entrez la couleur du pixel b: ");
     scanf("%hhu", &b);
 
-    // // Initialiser la structure de pixel
-    // Pixel pixel ;
-    // init_pixel(&pixel, r, g, b);
-
     // Envoyer les infos du pixel au serveur
     sprintf(buffer, "%hhu %hhu %hhu %hhu %hhu", x, y, r, g, b);
     send(sockfd, buffer, strlen(buffer), 0);
@@ -46,13 +42,12 @@ void set_pixel_cli(int sockfd)
 }
 
 // Recevoir les dimensions de la matrice
-ssize_t get_size(int sockfd, int *L, int *C)
+void get_size(int sockfd, int *L, int *C)
 {
     char buffer[LG_MESSAGE];
     unsigned char x, y;
     ssize_t lus = recv(sockfd, buffer, LG_MESSAGE, 0);
-    sscanf(buffer, "%hhu %hhu", x, y);
-    *L = atoi(x);
-    *C = atoi(y);
-    return lus;
+    sscanf(buffer, "%hhu %hhu", &x, &y);
+    *L = (int)x;
+    *C = (int)y;
 }
