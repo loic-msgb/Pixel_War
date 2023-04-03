@@ -15,30 +15,63 @@
 #define LG_MESSAGE   256
 
 // Récupérer, valider et envoyer les infos pour placer un pixel
-void set_pixel_cli(int sockfd)
+void set_pixel_cli(int sockfd, int L, int C)
 {   
-    
     int x_num, y_num;
     unsigned char x, y, r, g, b;
     char buffer[256];
+    int num_read;
+
     // Récupérer les coordonnées du pixel
-    printf("Entrez la coordonnée x du pixel : ");
-    scanf("%hhu", &x);
-    printf("Entrez la coordonnée y du pixel : ");
-    scanf("%hhu", &y);
+    do {
+        printf("Entrez la coordonnée x du pixel (entre 0 et %d inclus) : ", L-1);
+        num_read = scanf("%hhu", &x);
+        if (num_read != 1 || x >= L) {
+            printf("Erreur: la coordonnée x doit être un entier entre 0 et %d inclus.\n", L-1);
+            while (getchar() != '\n'); // vider le tampon d'entrée
+        }
+    } while (num_read != 1 || x >= L);
+
+    do {
+        printf("Entrez la coordonnée y du pixel (entre 0 et %d inclus) : ", C-1);
+        num_read = scanf("%hhu", &y);
+        if (num_read != 1 || y >= C) {
+            printf("Erreur: la coordonnée y doit être un entier entre 0 et %d inclus.\n", C-1);
+            while (getchar() != '\n'); // vider le tampon d'entrée
+        }
+    } while (num_read != 1 || y >= C);
 
     // Récupérer la couleur du pixel
-    printf("Entrez la couleur du pixel r: ");
-    scanf("%hhu", &r);
-    printf("Entrez la couleur du pixel g: ");
-    scanf("%hhu", &g);
-    printf("Entrez la couleur du pixel b: ");
-    scanf("%hhu", &b);
+    do {
+        printf("Entrez la couleur du pixel r (entre 0 et 255 inclus) : ");
+        num_read = scanf("%hhu", &r);
+        if (num_read != 1 || r > 255) {
+            printf("Erreur: la valeur de la couleur r doit être un entier entre 0 et 255 inclus.\n");
+            while (getchar() != '\n'); // vider le tampon d'entrée
+        }
+    } while (num_read != 1 || r > 255);
+
+    do {
+        printf("Entrez la couleur du pixel g (entre 0 et 255 inclus) : ");
+        num_read = scanf("%hhu", &g);
+        if (num_read != 1 || g > 255) {
+            printf("Erreur: la valeur de la couleur g doit être un entier entre 0 et 255 inclus.\n");
+            while (getchar() != '\n'); // vider le tampon d'entrée
+        }
+    } while (num_read != 1 || g > 255);
+
+    do {
+        printf("Entrez la couleur du pixel b (entre 0 et 255 inclus) : ");
+        num_read = scanf("%hhu", &b);
+        if (num_read != 1 || b > 255) {
+            printf("Erreur: la valeur de la couleur b doit être un entier entre 0 et 255 inclus.\n");
+            while (getchar() != '\n'); // vider le tampon d'entrée
+        }
+    } while (num_read != 1 || b > 255);
 
     // Envoyer les infos du pixel au serveur
     sprintf(buffer, "%hhu %hhu %hhu %hhu %hhu", x, y, r, g, b);
     send(sockfd, buffer, strlen(buffer), 0);
-    
 }
 
 // Recevoir les dimensions de la matrice

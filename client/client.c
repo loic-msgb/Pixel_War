@@ -70,12 +70,14 @@ int main(int argc, char const *argv[])
         case 1:
             //envoyer le choix de l'utilisateur
             send(socket_fd, &choix, sizeof(choix), 0);
+            // Recevoir les dimensions de la matrice
+            get_size(socket_fd, &L, &C);
             printf("Vous avez choisi de placer un pixel\n");
-            set_pixel_cli(socket_fd);
+            set_pixel_cli(socket_fd,L,C);
             // Recevoir message de confirmation
             char confirmation[LG_MESSAGE];
             recv(socket_fd, confirmation, LG_MESSAGE, 0);
-            printf("%s", confirmation);
+            printf("%s\n", confirmation);
             break;
         case 2:
             // Envoyer la commande au serveur
@@ -89,8 +91,9 @@ int main(int argc, char const *argv[])
             // Afficher la matrice
             // Envoyer la commande au serveur
             send(socket_fd, &choix, sizeof(choix), 0);
+            // Recevoir les dimensions de la matrice
+            get_size(socket_fd, &L, &C);
             // Recevoir la matrice_string du serveur
-            
             recv(socket_fd, matrice_string, L * C * sizeof(Pixel), 0);
            
             // Convertir la matrice_string en matrice
