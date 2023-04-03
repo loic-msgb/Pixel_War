@@ -56,7 +56,8 @@ int main(int argc, char const *argv[])
     }
 
     Pixel** matrice = init_matrice(L,C);
-    
+    char* matrice_string = malloc(L * C * sizeof(Pixel));
+
     while (atoi(choix) != 4)
     {   
         menu();
@@ -89,11 +90,11 @@ int main(int argc, char const *argv[])
             // Envoyer la commande au serveur
             send(socket_fd, &choix, sizeof(choix), 0);
             // Recevoir la matrice_string du serveur
-            char* matrice_string = malloc(L * C * sizeof(Pixel));
+            
             recv(socket_fd, matrice_string, L * C * sizeof(Pixel), 0);
-
+           
             // Convertir la matrice_string en matrice
-            Pixel** matrice = init_matrice(L,C);
+           
             matrice = string_to_matrice(matrice_string, L, C);
             
             afficher_matrice(matrice, L, C);

@@ -66,6 +66,7 @@ int main(int argc, char const *argv[])
 
     // Création de la matrice
     Pixel** matrice = init_matrice(L,C);
+    char* matrice_string = matrice_to_string(matrice, L, C);
 
     // créer un socket de communication
     socket_ecoute = socket(PF_INET, SOCK_STREAM, 0);     /* 0 indique que l'on utilisera le protocole par défaut associé à SOCK_STREAM soit TCP */
@@ -187,7 +188,7 @@ int main(int argc, char const *argv[])
                         send_size(courant->socket, L, C);
                         break;
                     case 3:
-                        char* matrice_string = matrice_to_string(matrice, L, C);
+                        matrice_string = matrice_to_string(matrice, L, C);
                         printf("veux avoir la matrice\n");
                         // envoyer la matrice au client
                         send(courant->socket, matrice_string, sizeof(struct Pixel)*L*C, 0);
