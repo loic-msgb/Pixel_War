@@ -12,16 +12,11 @@
 #include "../src/matrice.h"
 #include "fonctions.h"
 
-#define TAILLE_MESSAGE 7200
 #define LG_MESSAGE 256
 
 // Valeurs matrice
 #define DEFAULT_L 60
 #define DEFAULT_C 40
-// chaine de caractère reçu du serveur
-char messageRecu[100];
-// chaines de caractères pour les choix de l'utilisateur
-char messageEnvoi[100];
 
 int main(int argc, char const *argv[])
 {
@@ -76,12 +71,41 @@ int main(int argc, char const *argv[])
             send(socket_fd, &choix, sizeof(choix), 0);
             printf("Vous avez choisi de placer un pixel\n");
             set_pixel_cli(socket_fd);
+            // Recevoir message de confirmation
+            char confirmation[LG_MESSAGE];
+            recv(socket_fd, confirmation, LG_MESSAGE, 0);
+            printf("%s", confirmation);
             break;
         case 2:
+            // Envoyer la commande au serveur
+            send(socket_fd, &choix, sizeof(choix), 0);
+            // Recevoir les dimensions de la matrice
+            get_size(socket_fd, &L, &C);
             // Afficher les dimensions de la matrice
             printf("La matrice fait %d lignes et %d colonnes", L, C);
             break;
+        case 3:
+            // Afficher la matrice
+            // Envoyer la commande au serveur
+            send(socket_fd, &choix, sizeof(choix), 0);
+            // Recevoir la matrice_string du serveur
+            char* matrice_string = malloc(L * C * sizeof(Pixel));
+            recv(socket_fd, matrice_string, L * C * sizeof(Pixel), 0);
+
+            // Convertir la matrice_string en matrice
+            Pixel** matrice = init_matrice(L,C);
+            matrice = string_to_matrice(matrice_string, L, C);
+            
+            afficher_matrice(matrice, L, C);
+            break;
+        case 4:
+            // Quitter le programme
+            // Envoyer la commande au serveur
+            send(socket_fd, &choix, sizeof(choix), 0);
+            printf("Vous avez choisi de quitter le programme\n");
+            break;
         default:
+            printf("99 Unknown Command");
             break;
         }
         

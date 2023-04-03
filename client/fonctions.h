@@ -4,4 +4,4 @@
 void set_pixel_cli(int sockfd);
 
 // Recevoir les dimensions de la matrice
-ssize_t get_size(int sockfd, int *L, int *C);
+void get_size(int sockfd, int *L, int *C);

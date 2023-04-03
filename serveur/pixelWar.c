@@ -66,7 +66,6 @@ int main(int argc, char const *argv[])
 
     // Création de la matrice
     Pixel** matrice = init_matrice(L,C);
-    char* matrice_string = matrice_to_string(matrice, L, C);
 
     // créer un socket de communication
     socket_ecoute = socket(PF_INET, SOCK_STREAM, 0);     /* 0 indique que l'on utilisera le protocole par défaut associé à SOCK_STREAM soit TCP */
@@ -146,10 +145,6 @@ int main(int argc, char const *argv[])
             nouveau_client->suivant = liste;
             liste = nouveau_client;
             printf("Nouvelle connexion : %s : %d (socket %d)\n", inet_ntoa(adresse_client.sin_addr), ntohs(adresse_client.sin_port), client_socket);
-
-            // afficher L et C sur le terminal client
-            //send_size(courant->socket, L, C);
-
         }
 
         // Vérifier si les sockets des clients ont reçu des données
@@ -192,6 +187,7 @@ int main(int argc, char const *argv[])
                         send_size(courant->socket, L, C);
                         break;
                     case 3:
+                        char* matrice_string = matrice_to_string(matrice, L, C);
                         printf("veux avoir la matrice\n");
                         // envoyer la matrice au client
                         send(courant->socket, matrice_string, sizeof(struct Pixel)*L*C, 0);
@@ -222,9 +218,6 @@ int main(int argc, char const *argv[])
     
     // On ferme la ressource avant de quitter   
     close(socket_ecoute);
-
-    // Libérer la mémoire allouée pour les éléments
-    free(matrice_string);
 
     // Libérer chaque ligne de la matrice
     for (int i = 0; i < L; i++) {
