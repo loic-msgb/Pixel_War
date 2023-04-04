@@ -142,3 +142,26 @@ int check_rate_limit(int rate_limit, Client* courant)
     }
     return result;
 }
+
+// get_wait_time
+int get_wait_time(int rate_limit, Client* courant)
+{
+    time_t now = time(NULL);
+    int wait_time = 0;
+    int temps_ecoule = now - courant->last_set;
+
+    if(temps_ecoule >= 60)
+    {
+        wait_time = 0;
+    }
+
+   if (rate_limit - courant->compteur <= 0)
+    {
+        wait_time = 60 - temps_ecoule;
+    }
+    else
+    {
+        wait_time = 0;
+    }
+    return wait_time;
+}

@@ -18,6 +18,8 @@
 #define LG_MESSAGE   256
 #define MAX_CLIENTS 5
 #define DEFAULT_RATE_LIMIT 10
+#define VERSION 1.0
+
 // Valeurs matrice Lignes Colonnes
 #define DEFAULT_L 60
 #define DEFAULT_C 40
@@ -31,6 +33,8 @@ int main(int argc, char const *argv[])
     int max_fd; //nombre maximum de filedescriptor
     struct sockaddr_in adresse_serveur, adresse_client;
     char messageRecu[LG_MESSAGE];
+    float version = VERSION;
+    int wait_time = 0;
 
     Client* liste = NULL;
 
@@ -226,7 +230,23 @@ int main(int argc, char const *argv[])
                         printf("Déconnexion du client (socket %d)\n", courant->socket);
                         supprimer_client(&liste, courant->socket);
                         break;
+                    case 5:
+                        // veut avoir le temps d'attente restant
+                        printf("veux avoir le temps d'attente restant\n");
+                        // envoyer le temps d'attente restant au client
+                        wait_time = get_wait_time(rate_limit, courant);
+                        send(courant->socket, &wait_time, sizeof(int), 0);
+                        break;
+                    case 6:
+                        // veut avoir la version du protocole
+                        printf("veux avoir la version du protocole\n");
+                        // envoyer la variable version au client
+                        send(courant->socket, &version, sizeof(float), 0);
+                        break;
                     default:
+                        printf("choix invalide\n");
+                        // Envoi d'un message d'erreur au client
+                        send(courant->socket, "99 Unknown Command", 19, 0);
                         break;
                     }
                 }

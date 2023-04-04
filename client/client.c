@@ -23,7 +23,8 @@ int main(int argc, char const *argv[])
     int L = DEFAULT_L;
     int C = DEFAULT_C;
     char choix[256];
-
+    int wait_time;
+    float version = 0.0;
 
     // Vérifiez que l'utilisateur a fourni l'adserveurse IP et le numéro de port du serveur
     if (argc != 3) {
@@ -95,11 +96,9 @@ int main(int argc, char const *argv[])
             get_size(socket_fd, &L, &C);
             // Recevoir la matrice_string du serveur
             recv(socket_fd, matrice_string, L * C * sizeof(Pixel), 0);
-           
-            // Convertir la matrice_string en matrice
-           
-            matrice = string_to_matrice(matrice_string, L, C);
             
+            // Convertir la matrice_string en matrice
+            matrice = string_to_matrice(matrice_string, L, C);
             afficher_matrice(matrice, L, C);
             break;
         case 4:
@@ -108,8 +107,29 @@ int main(int argc, char const *argv[])
             send(socket_fd, &choix, sizeof(choix), 0);
             printf("Vous avez choisi de quitter le programme\n");
             break;
+        case 5:
+            // get_wait_time
+            // Envoyer la commande au serveur
+            send(socket_fd, &choix, sizeof(choix), 0);
+            // Recevoir le temps d'attente
+            recv(socket_fd, &wait_time, sizeof(wait_time), 0);
+            printf("Le temps d'attente est de %d secondes\n", wait_time);
+            break;
+        case 6:
+            // recevoir la version du protocol
+            // Envoyer la commande au serveur
+            send(socket_fd, &choix, sizeof(choix), 0);
+            // Recevoir la version du protocol
+            recv(socket_fd, &version, sizeof(float), 0);
+            printf("Version %f\n", version);
+            break;
         default:
-            printf("99 Unknown Command");
+            // Envoyer la commande au serveur
+            send(socket_fd, &choix, sizeof(choix), 0);
+            // Recevoir message d'erreur
+            char erreur[LG_MESSAGE];
+            recv(socket_fd, erreur, LG_MESSAGE, 0);
+            printf("%s\n", erreur);
             break;
         }
         

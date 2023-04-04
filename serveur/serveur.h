@@ -19,4 +19,6 @@ void send_size(int socket_client, int L, int C);
 // Vérifier si le compteur de clients est inférieur au rate_limit
 int check_rate_limit(int rate_limit, Client* courant);
 
+// get_wait_time
+int get_wait_time(int rate_limit, Client* courant);
 #endif
